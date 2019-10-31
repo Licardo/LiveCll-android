@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">LiveCll</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="login_code">%1$d秒后重新发送</string>
+    <string name="login_send_code">发送验证码</string>
+    <string name="login_ver_code_name">LiveCll</string>
+    <string name="app_company">paofan&#038;orange</string>
+    <string name="login_action">登录</string>
+    <string name="app_name_cn">慢淋资讯</string>
+</resources>
