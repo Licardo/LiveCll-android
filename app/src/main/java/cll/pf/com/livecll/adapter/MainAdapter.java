@@ -20,13 +20,13 @@ import java.util.List;
 import cll.pf.com.livecll.R;
 import cll.pf.com.livecll.router.ConstantPath;
 import cll.pf.com.livecll.router.RouterPath;
-import cll.pf.com.livecll.vo.cll_data;
+import cll.pf.com.livecll.vo.CllVo;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
-    private List<cll_data> mCllDatas;
+    private List<CllVo> mCllDatas;
     private Context mContext;
 
-    public MainAdapter(List<cll_data> cllDatas) {
+    public MainAdapter(List<CllVo> cllDatas) {
         mCllDatas = cllDatas;
     }
 
@@ -40,7 +40,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final MainViewHolder mainViewHolder, int i) {
-        final cll_data cllData = mCllDatas.get(i);
+        final CllVo cllData = mCllDatas.get(i);
         mainViewHolder.tvTitle.setText(cllData.getTitle());
         mainViewHolder.tvTag.setText(new StringBuilder().append(cllData.getPlatform()));
         Glide.with(mContext).load(cllData.getImage()).into(mainViewHolder.ivImage);
@@ -53,11 +53,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                     Snackbar.make(mainViewHolder.mCardView, "资讯链接不合法", Snackbar.LENGTH_LONG).show();
                     return;
                 }
-//                Intent intent = new Intent(mContext, WebViewActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("key", cllData.getUrl());
-//                intent.putExtras(bundle);
-//                mContext.startActivity(intent);
                 RouterPath.getInstance().navigation(mContext, ConstantPath.WEBVIEW_INDEX, bundle);
             }
         });

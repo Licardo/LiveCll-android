@@ -10,7 +10,7 @@ public class Constants {
     /**
      * 是否隐藏子Fragment，还没有实现
      */
-    public static final Short HIDDEN_FRAGMENT = 0;
+    public static final int HIDDEN_FRAGMENT = 0;
 
     /**
      *  首页的展示类型

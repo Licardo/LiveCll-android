@@ -19,14 +19,14 @@ import java.util.List;
 import cll.pf.com.livecll.R;
 import cll.pf.com.livecll.router.ConstantPath;
 import cll.pf.com.livecll.router.RouterPath;
-import cll.pf.com.livecll.vo.cll_data;
+import cll.pf.com.livecll.vo.CllVo;
 
 public class SmallImageAdapter extends RecyclerView.Adapter<SmallImageAdapter.ViewHolder> {
 
-    private List<cll_data> mCllDatas;
+    private List<CllVo> mCllDatas;
     private Context mContext;
 
-    public SmallImageAdapter(List<cll_data> cllDatas) {
+    public SmallImageAdapter(List<CllVo> cllDatas) {
         mCllDatas = cllDatas;
     }
 
@@ -40,7 +40,7 @@ public class SmallImageAdapter extends RecyclerView.Adapter<SmallImageAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-        final cll_data cllData = mCllDatas.get(i);
+        final CllVo cllData = mCllDatas.get(i);
         viewHolder.tvTitle.setText(cllData.getTitle());
         viewHolder.tvSource.setText(cllData.getSource());
         viewHolder.tvPlatform.setText(cllData.getPlatform());

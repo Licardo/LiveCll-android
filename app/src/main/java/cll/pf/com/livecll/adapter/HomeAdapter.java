@@ -25,12 +25,12 @@ import cll.pf.com.livecll.holder.IndicatorPageAdapter;
 import cll.pf.com.livecll.router.ConstantPath;
 import cll.pf.com.livecll.router.RouterPath;
 import cll.pf.com.livecll.utils.HomeStyle;
-import cll.pf.com.livecll.vo.home_title;
+import cll.pf.com.livecll.vo.HomeVo;
 
 public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<home_title> mTitles;
+    private List<HomeVo> mTitles;
 
-    public HomeAdapter(List<home_title> titles) {
+    public HomeAdapter(List<HomeVo> titles) {
         mTitles = titles;
     }
 
@@ -62,20 +62,20 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewHolder instanceof HomeBannerHolder) {
 
             HomeBannerHolder holder = (HomeBannerHolder) viewHolder;
-            int size = mTitles.get(i).getHomeContents().size();
+            int size = mTitles.get(i).getHome_contents().size();
             List<ImageView> imageViews = new ArrayList<>();
             List<String> urls = new ArrayList<>();
             for (int j = 0; j < size; j++) {
                 ImageView view = new ImageView(holder.mViewPager.getContext());
                 imageViews.add(view);
-                urls.add(mTitles.get(i).getHomeContents().get(j).getContent());
+                urls.add(mTitles.get(i).getHome_contents().get(j).getImage_url());
             }
             holder.mComponent.setAdapter(new IndicatorPageAdapter(holder.mViewPager.getContext(), imageViews, urls));
 //                holder.mComponent.setAutoPlayTime(3000);
             holder.mComponent.startAutoPlay();
         } else if (viewHolder instanceof HomeFunctionHolder) {
             final HomeFunctionHolder holder = (HomeFunctionHolder) viewHolder;
-            holder.mTextView.setText(mTitles.get(i).getTitle());
+            holder.mTextView.setText(mTitles.get(i).getTile());
             Glide.with(holder.mImageView).load(mTitles.get(i).getImage_url()).into(holder.mImageView);
             final String path = mTitles.get(i).getClick_url();
             holder.setListener(new View.OnClickListener() {
@@ -87,17 +87,17 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
         } else if (viewHolder instanceof HomeListHolder) {
             final HomeListHolder holder = (HomeListHolder) viewHolder;
-            holder.mTextView.setText(mTitles.get(i).getTitle());
+            holder.mTextView.setText(mTitles.get(i).getTile());
             holder.mLinearLayout.removeAllViews();
-            int size = mTitles.get(i).getHomeContents().size();
+            int size = mTitles.get(i).getHome_contents().size();
             for (int j = 0; j < size; j++) {
                 View view = LayoutInflater.from(holder.mLinearLayout.getContext()).
                         inflate(R.layout.home_item_function, null);
                 TextView textView = view.findViewById(R.id.tv_name);
                 ImageView imageView = view.findViewById(R.id.iv_image);
-                textView.setText(mTitles.get(i).getHomeContents().get(j).getContent());
-                Glide.with(imageView).load(mTitles.get(i).getHomeContents().get(j).getImage_url()).into(imageView);
-                final String path = mTitles.get(i).getHomeContents().get(j).getClick_url();
+                textView.setText(mTitles.get(i).getHome_contents().get(j).getContent());
+                Glide.with(imageView).load(mTitles.get(i).getHome_contents().get(j).getImage_url()).into(imageView);
+                final String path = mTitles.get(i).getHome_contents().get(j).getClick_url();
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -112,8 +112,8 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         } else if (viewHolder instanceof ArticleHolder) {
             final ArticleHolder holder = (ArticleHolder) viewHolder;
-            final home_title title = mTitles.get(i);
-            holder.tvTitle.setText(title.getTitle());
+            final HomeVo title = mTitles.get(i);
+            holder.tvTitle.setText(title.getTile());
 //            holder.tvSource.setText(cllData.getSource());
 //            holder.tvPlatform.setText(cllData.getPlatform());
             Glide.with(holder.ivImage).load(title.getImage_url()).into(holder.ivImage);
@@ -124,7 +124,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Bundle bundle = new Bundle();
                     bundle.putString("key", title.getClick_url());
 //                    bundle.putString("title", cllData.getSource());
-                    bundle.putString("des", title.getTitle());
+                    bundle.putString("des", title.getTile());
                     RouterPath.getInstance().navigation(holder.ivImage.getContext(),
                             ConstantPath.WEBVIEW_INDEX, bundle);
                 }

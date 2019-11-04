@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import cn.bmob.v3.BmobObject;
+@Deprecated
 public class home_content extends BmobObject implements Parcelable,Comparable<home_content> {
     private Short sort;
     private String content;

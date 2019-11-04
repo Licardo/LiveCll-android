@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import cn.bmob.v3.BmobObject;
 
+@Deprecated
 public class tab_info extends BmobObject implements Comparable<tab_info>{
     private String name;
     private String icons_selected;

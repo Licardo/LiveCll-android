@@ -11,31 +11,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.shizhefei.view.indicator.FixedIndicatorView;
 import com.shizhefei.view.indicator.IndicatorViewPager;
 import com.shizhefei.view.viewpager.SViewPager;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import cll.pf.com.livecll.R;
 import cll.pf.com.livecll.base.BaseActivity;
 import cll.pf.com.livecll.listener.OnTransitionViewListener;
+import cll.pf.com.livecll.net.HttpUtils;
 import cll.pf.com.livecll.router.CllRouter;
 import cll.pf.com.livecll.router.ConstantPath;
-import cll.pf.com.livecll.vo.tab_child_info;
-import cll.pf.com.livecll.vo.tab_info;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import cll.pf.com.livecll.vo.TabVo;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 @CllRouter(value = ConstantPath.TAB_INDEX)
 public class TabActivity extends BaseActivity {
     private IndicatorViewPager indicatorViewPager;
     private FixedIndicatorView indicator;
     private SViewPager sViewPager;
-    private List<tab_info> mTabInfos;
+    private List<TabVo> mTabInfos;
 
     @Override
     public void initView() {
@@ -79,47 +83,33 @@ public class TabActivity extends BaseActivity {
     }
 
     private void getAllTabInfos() {
-        BmobQuery<tab_info> tabInfoBmobQuery = new BmobQuery<>();
-        tabInfoBmobQuery.findObjects(new FindListener<tab_info>() {
+
+        Request request = new Request.Builder()
+                .get()
+                .url("http://49.232.163.72:8000/cll/tab/info")
+                .build();
+        HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override
-            public void done(List<tab_info> list, BmobException e) {
-                if (list == null) {
+            public void onFailure(Call call, IOException e) { }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
                     return;
                 }
-                mTabInfos = list;
+                Gson gson = new Gson();
+                String data = response.body()==null?"":response.body().string();
+                List<TabVo> tabVos = gson.fromJson(data, new TypeToken<List<TabVo>>(){}.getType());
+                mTabInfos = tabVos;
                 Collections.sort(mTabInfos);
-                getAllChildTabInfos();
+                sViewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        initViewPage();
+                    }
+                });
             }
         });
-    }
-
-    private void getAllChildTabInfos() {
-        BmobQuery<tab_child_info> query = new BmobQuery<>();
-        query.findObjects(new FindListener<tab_child_info>() {
-            @Override
-            public void done(List<tab_child_info> list, BmobException e) {
-                if (list == null) {
-                    return;
-                }
-                handleData(list);
-                initViewPage();
-            }
-        });
-    }
-
-    private void handleData(List<tab_child_info> tabChildInfos) {
-        int size = mTabInfos.size();
-        for (int i = 0; i < size; i++) {
-            tab_info info = mTabInfos.get(i);
-            int len = tabChildInfos.size();
-            for (int j = 0; j < len; j++) {
-                tab_child_info childInfo = tabChildInfos.get(j);
-                if (info.getObjectId().equals(childInfo.getRelation().getObjectId())) {
-                    info.getTabChildInfos().add(childInfo);
-                }
-            }
-            Collections.sort(info.getTabChildInfos());
-        }
     }
 
     class ViewPagerAdapter extends IndicatorViewPager.IndicatorFragmentPagerAdapter{
@@ -144,7 +134,6 @@ public class TabActivity extends BaseActivity {
             TextView textView = convertView.findViewById(R.id.tv_title);
             ImageView imageView = convertView.findViewById(R.id.iv_image);
             textView.setText(mTabInfos.get(position).getName());
-//            imageView.setImageResource(tabUnIcons[position]);
             Glide.with(imageView).load(mTabInfos.get(position).getIcons_unselected()).into(imageView);
             return convertView;
         }
@@ -154,9 +143,8 @@ public class TabActivity extends BaseActivity {
             Fragment fragment;
             fragment = new CommonFragment();
             Bundle bundle = new Bundle();
-//            bundle.putString(MainFragment.INTENT_INT_INDEX, Constants.TAB_NAMES[position]);
             bundle.putParcelableArrayList(MainFragment.INTENT_INT_INDEX,
-                    mTabInfos.get(position).getTabChildInfos());
+                    mTabInfos.get(position).getTab_child_infos());
             fragment.setArguments(bundle);
             return fragment;
         }

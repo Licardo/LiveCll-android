@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import cn.bmob.v3.BmobObject;
 
+@Deprecated
 public class tab_child_info extends BmobObject implements Comparable<tab_child_info>, Parcelable {
     private String tab_name;
     private String source;

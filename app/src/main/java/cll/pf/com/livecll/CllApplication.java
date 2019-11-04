@@ -24,6 +24,7 @@ import java.util.Locale;
 
 import cll.pf.com.livecll.constant.Constants;
 import cll.pf.com.livecll.constant.OthersAppId;
+import cll.pf.com.livecll.net.HttpUtils;
 import cll.pf.com.livecll.router.AnnotationControl;
 import cn.bmob.v3.Bmob;
 
@@ -72,6 +73,7 @@ public class CllApplication extends DefaultApplicationLike {
         });
         // 回调微信sdk
         regToWx();
+        HttpUtils.init(null);
     }
 
     // IWXAPI 是第三方app和微信通信的openApi接口

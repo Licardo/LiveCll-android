@@ -1,29 +1,36 @@
 package cll.pf.com.livecll.ui;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cll.pf.com.livecll.R;
 import cll.pf.com.livecll.adapter.SmallImageAdapter;
 import cll.pf.com.livecll.base.BaseFragment;
+import cll.pf.com.livecll.net.HttpUtils;
 import cll.pf.com.livecll.view.CllItemDecoration;
-import cll.pf.com.livecll.vo.cll_data;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import cll.pf.com.livecll.vo.CllVo;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class ListFragment extends BaseFragment {
 
     private PullLoadMoreRecyclerView mRvContent;
     private SmallImageAdapter mAdapter;
-    private List<cll_data> mCllDatas;
+    private List<CllVo> mCllDatas;
     private String cllSource, cllPlatform;
+    private int page = 1;
 
     @Override
     public int getLayoutId() {
@@ -58,29 +65,47 @@ public class ListFragment extends BaseFragment {
 
             @Override
             public void onLoadMore() {
-                loadCllDatas(cllSource, cllPlatform);
+                page++;
+                loadCllDatas(cllSource, cllPlatform, page);
                 mRvContent.setPullLoadMoreCompleted();
             }
         });
-        loadCllDatas(cllSource, cllPlatform);
+        loadCllDatas(cllSource, cllPlatform, page);
     }
 
-    private void loadCllDatas(String value, String platform) {
-        BmobQuery<cll_data> query = new BmobQuery<>("cll_data");
-        int skipCount = mCllDatas.size();
-        query.addWhereEqualTo("source", value);
-        if (!TextUtils.isEmpty(cllPlatform)) {
-            query.addWhereEqualTo("platform", platform);
-        }
-        query.order("-send_time");
-        query.setSkip(skipCount).setLimit(10).findObjects(new FindListener<cll_data>() {
+    private void loadCllDatas(String source, String platform, int page) {
+        Map<String, String> params = new HashMap<>();
+        params.put("page", String.valueOf(page));
+        params.put("source", source);
+        params.put("platform", platform);
+        String url = HttpUtils.addParams("http://49.232.163.72:8000/cll/info", params);
+        Request request = new Request.Builder().get().url(url).build();
+        HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override
-            public void done(List<cll_data> list, BmobException e) {
-                if (list == null) {
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
                     return;
                 }
-                mCllDatas.addAll(list);
-                mAdapter.notifyDataSetChanged();
+                Gson gson = new Gson();
+                String data = response.body()==null?"":response.body().string();
+                List<CllVo> cllVos = gson.fromJson(data, new TypeToken<List<CllVo>>(){}.getType());
+
+                if (cllVos == null) {
+                    return;
+                }
+                mCllDatas.addAll(cllVos);
+                mRvContent.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+
             }
         });
     }

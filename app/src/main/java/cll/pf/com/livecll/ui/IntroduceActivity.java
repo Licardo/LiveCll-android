@@ -4,29 +4,36 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tencent.bugly.beta.Beta;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cll.pf.com.livecll.R;
 import cll.pf.com.livecll.adapter.HomeAdapter;
 import cll.pf.com.livecll.base.BaseActivity;
 import cll.pf.com.livecll.constant.Constants;
+import cll.pf.com.livecll.net.HttpUtils;
 import cll.pf.com.livecll.router.CllRouter;
 import cll.pf.com.livecll.router.ConstantPath;
-import cll.pf.com.livecll.vo.cll_data;
-import cll.pf.com.livecll.vo.home_content;
-import cll.pf.com.livecll.vo.home_title;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import cll.pf.com.livecll.vo.CllVo;
+import cll.pf.com.livecll.vo.HomeVo;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 @CllRouter(value = ConstantPath.INTRODUCE_INDEX)
 public class IntroduceActivity extends BaseActivity {
 
-    private List<home_title> mTabInfos;
+//    private List<home_title> mTabInfos;
+    private List<HomeVo> mTabInfos;
     private SwipeRefreshLayout mRefreshLayout;
     private HomeAdapter mAdapter;
 
@@ -66,73 +73,73 @@ public class IntroduceActivity extends BaseActivity {
     }
 
     private void getAllHomeTitle() {
-        BmobQuery<home_title> query = new BmobQuery<>();
-        query.findObjects(new FindListener<home_title>() {
+        Request request = new Request.Builder()
+                .get()
+                .url("http://49.232.163.72:8000/cll/home/info")
+                .build();
+        HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override
-            public void done(List<home_title> list, BmobException e) {
+            public void onFailure(Call call, IOException e) {
                 mRefreshLayout.setRefreshing(false);
-                if (list == null) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                mRefreshLayout.setRefreshing(false);
+                if (!response.isSuccessful()) {
                     return;
                 }
-                mTabInfos.addAll(list);
+                Gson gson = new Gson();
+                String data = response.body()==null?"":response.body().string();
+                List<HomeVo> homeVos = gson.fromJson(data, new TypeToken<List<HomeVo>>(){}.getType());
+                mTabInfos.addAll(homeVos);
                 Collections.sort(mTabInfos);
-                getAllHomeContent();
-                loadCllDatas("", "");
+                mRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyDataSetChanged();
+                        loadCllDatas();
+                    }
+                });
             }
         });
     }
 
-    private void getAllHomeContent() {
-        BmobQuery<home_content> query = new BmobQuery<>();
-        query.findObjects(new FindListener<home_content>() {
+    private void loadCllDatas() {
+        Map<String, String> params = new HashMap<>();
+        params.put("page", "1");
+        String url = HttpUtils.addParams("http://49.232.163.72:8000/cll/info", params);
+        Request request = new Request.Builder().get().url(url).build();
+        HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override
-            public void done(List<home_content> list, BmobException e) {
-                if (list == null) {
-                    return;
-                }
-                Collections.sort(list);
-                handleData(list);
-            }
-        });
-    }
+            public void onFailure(Call call, IOException e) {
 
-    private void loadCllDatas(String value, String platform) {
-        BmobQuery<cll_data> query = new BmobQuery<>();
-//        query.addWhereEqualTo("source", "杨申淼");
-//        if (!TextUtils.isEmpty(cllPlatform)) {
-//            query.addWhereEqualTo("platform", "杨申淼");
-//        }
-        query.order("-send_time");
-        query.setSkip(0).setLimit(10).findObjects(new FindListener<cll_data>() {
+            }
+
             @Override
-            public void done(List<cll_data> list, BmobException e) {
-                if (list == null) {
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
                     return;
                 }
-                for (cll_data data:list) {
-                    home_title title = new home_title();
-                    title.setImage_url(data.getImage());
-                    title.setTitle(data.getTitle());
-                    title.setClick_url(data.getUrl());
+                Gson gson = new Gson();
+                String data = response.body()==null?"":response.body().string();
+                List<CllVo> cllVos = gson.fromJson(data, new TypeToken<List<CllVo>>(){}.getType());
+                for (CllVo vo:cllVos) {
+                    HomeVo title = new HomeVo();
+                    title.setImage_url(vo.getImage());
+                    title.setTile(vo.getTitle());
+                    title.setClick_url(vo.getUrl());
                     title.setStyle(Constants.STYLE_ARTICLE);
                     mTabInfos.add(title);
                 }
-                mAdapter.notifyDataSetChanged();
+                mRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+
             }
         });
-    }
-
-    private void handleData(List<home_content> contents) {
-        int len = mTabInfos.size();
-        for (int i = 0; i < len; i++) {
-            home_title title = mTabInfos.get(i);
-            int size = contents.size();
-            for (int j = 0; j < size; j++) {
-                if (title.getObjectId().equals(contents.get(j).getTitle().getObjectId())) {
-                    title.getHomeContents().add(contents.get(j));
-                }
-            }
-        }
-        mAdapter.notifyDataSetChanged();
     }
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import cn.bmob.v3.BmobObject;
 
+@Deprecated
 public class home_title extends BmobObject implements Comparable<home_title>{
     private String title;
     private String image_url;

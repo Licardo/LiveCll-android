@@ -20,13 +20,12 @@ import cll.pf.com.livecll.base.BaseFragment;
 import cll.pf.com.livecll.constant.Constants;
 import cll.pf.com.livecll.listener.OnTransitionViewListener;
 import cll.pf.com.livecll.model.TabsModel;
-import cll.pf.com.livecll.vo.tab_child_info;
+import cll.pf.com.livecll.vo.TabVo;
 
 public class CommonFragment extends BaseFragment {
     private IndicatorViewPager indicatorViewPager;
     private FixedIndicatorView indicator;
-//    private String mTabName;
-    private List<tab_child_info> mTabChildInfos;
+    private List<TabVo.TabChildVo> mTabChildInfos;
 
     @Override
     public int getLayoutId() {
@@ -52,20 +51,12 @@ public class CommonFragment extends BaseFragment {
         super.initData();
         Bundle bundle = getArguments();
         if (bundle != null) {
-//            mTabName = bundle.getString(MainFragment.INTENT_INT_INDEX);
             mTabChildInfos = bundle.getParcelableArrayList(MainFragment.INTENT_INT_INDEX);
         }
         if (mTabChildInfos == null) {
             return;
         }
         TabsModel[] tabsModels;
-//        if (Constants.TAB_NAMES[2].equals(mTabName)) {
-//            String[] tabNames = {"专家说", "淋巴瘤快报", "免费新药"};
-//            String[] sources = {"淋巴瘤之家", "淋巴瘤之家", "淋巴瘤之家"};
-//            String[] platforms = {"专家说", "淋巴瘤快报", "免费新药"};
-//            tabsModels = handleData(tabNames, sources, platforms);
-//            indicatorViewPager.setAdapter(new ViewPagerAdapter(this.getChildFragmentManager(), tabsModels));
-//        } else if (Constants.TAB_NAMES[0].equals(mTabName)) {
         int len = mTabChildInfos.size();
         String[] tabNames = new String[len];
         String[] sources = new String[len];

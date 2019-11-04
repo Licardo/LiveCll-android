@@ -2,6 +2,7 @@ package cll.pf.com.livecll.vo;
 
 import cn.bmob.v3.BmobObject;
 
+@Deprecated
 public class cll_data extends BmobObject {
     private Integer top;
     private Integer level;
