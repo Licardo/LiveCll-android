@@ -98,10 +98,21 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 textView.setText(mTitles.get(i).getHome_contents().get(j).getContent());
                 Glide.with(imageView).load(mTitles.get(i).getHome_contents().get(j).getImage_url()).into(imageView);
                 final String path = mTitles.get(i).getHome_contents().get(j).getClick_url();
+                final String content = mTitles.get(i).getHome_contents().get(j).getContent();
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        RouterPath.getInstance().navigation(holder.mTextView.getContext(), path);
+                        if (path.startsWith("livecll-http")) {
+                            String url = path.replace("livecll-http", "http");
+                            Bundle bundle = new Bundle();
+                            bundle.putString("key", url);
+                            bundle.putString("title", content);
+                            bundle.putString("des", "慢淋资讯");
+                            RouterPath.getInstance().navigation(holder.mTextView.getContext(),
+                                    ConstantPath.WEBVIEW_INDEX, bundle);
+                        } else {
+                            RouterPath.getInstance().navigation(holder.mTextView.getContext(), path);
+                        }
                     }
                 });
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
