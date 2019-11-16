@@ -3,6 +3,7 @@ package cll.pf.com.livecll.adapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,6 +103,9 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (TextUtils.isEmpty(path)) {
+                            return;
+                        }
                         if (path.startsWith("livecll-http")) {
                             String url = path.replace("livecll-http", "http");
                             Bundle bundle = new Bundle();
