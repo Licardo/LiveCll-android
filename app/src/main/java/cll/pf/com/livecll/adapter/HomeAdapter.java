@@ -67,7 +67,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 //            List<ImageView> imageViews = new ArrayList<>();
             List<String> urls = new ArrayList<>();
             for (int j = 0; j < size; j++) {
-                ImageView view = new ImageView(holder.mViewPager.getContext());
+//                ImageView view = new ImageView(holder.mViewPager.getContext());
 //                imageViews.add(view);
                 urls.add(mTitles.get(i).getHome_contents().get(j).getImage_url());
             }
