@@ -12,19 +12,17 @@ import java.util.List;
 
 public class IndicatorPageAdapter extends IndicatorViewPager.IndicatorViewPagerAdapter {
 
-    List<ImageView> mImageViews;
     List<String> mUrls;
     Context mContext;
 
-    public IndicatorPageAdapter(Context context, List<ImageView> imageViews, List<String> urls) {
-        mImageViews = imageViews;
+    public IndicatorPageAdapter(Context context, List<String> urls) {
         mUrls = urls;
         mContext = context;
     }
 
     @Override
     public int getCount() {
-        return mImageViews == null ? 0 : mImageViews.size();
+        return mUrls == null ? 0 : mUrls.size();
     }
 
     @Override
@@ -34,8 +32,13 @@ public class IndicatorPageAdapter extends IndicatorViewPager.IndicatorViewPagerA
 
     @Override
     public View getViewForPage(int position, View convertView, ViewGroup container) {
-        ImageView imageView = mImageViews.get(position);
-        Glide.with(imageView).load(mUrls.get(position)).into(imageView);
-        return imageView;
+        if (convertView == null) {
+            convertView = new ImageView(mContext);
+            convertView.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+        Glide.with(convertView).load(mUrls.get(position)).into((ImageView) convertView);
+        return convertView;
     }
 }
