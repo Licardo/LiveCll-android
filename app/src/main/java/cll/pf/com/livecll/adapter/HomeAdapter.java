@@ -64,14 +64,13 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             HomeBannerHolder holder = (HomeBannerHolder) viewHolder;
             int size = mTitles.get(i).getHome_contents().size();
-//            List<ImageView> imageViews = new ArrayList<>();
             List<String> urls = new ArrayList<>();
+            List<String> page_urls = new ArrayList<>();
             for (int j = 0; j < size; j++) {
-//                ImageView view = new ImageView(holder.mViewPager.getContext());
-//                imageViews.add(view);
                 urls.add(mTitles.get(i).getHome_contents().get(j).getImage_url());
+                page_urls.add(mTitles.get(i).getHome_contents().get(j).getClick_url());
             }
-            IndicatorPageAdapter mPageAdapter = new IndicatorPageAdapter(holder.mViewPager.getContext(), urls);
+            IndicatorPageAdapter mPageAdapter = new IndicatorPageAdapter(holder.mViewPager.getContext(), urls, page_urls);
             holder.mComponent.setAdapter(mPageAdapter);
             holder.mComponent.startAutoPlay();
 //                holder.mComponent.setAutoPlayTime(3000);
