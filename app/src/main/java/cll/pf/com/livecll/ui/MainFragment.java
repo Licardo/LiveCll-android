@@ -83,7 +83,7 @@ public class MainFragment extends BaseFragment {
         params.put("page", String.valueOf(page));
         params.put("source", source);
         params.put("platform", platform);
-        String url = HttpUtils.addParams("http://49.232.163.72:8000/cll/info", params);
+        String url = HttpUtils.addParams("http://www.livecll.com/cll/info", params);
         Request request = new Request.Builder().get().url(url).build();
         HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override

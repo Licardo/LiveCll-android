@@ -75,7 +75,7 @@ public class IntroduceActivity extends BaseActivity {
     private void getAllHomeTitle() {
         Request request = new Request.Builder()
                 .get()
-                .url("http://livecll.com:8000/cll/home/info")
+                .url("http://www.livecll.com/cll/home/info")
                 .build();
         HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override
@@ -108,7 +108,7 @@ public class IntroduceActivity extends BaseActivity {
     private void loadCllDatas() {
         Map<String, String> params = new HashMap<>();
         params.put("page", "1");
-        String url = HttpUtils.addParams("http://livecll.com:8000/cll/info", params);
+        String url = HttpUtils.addParams("http://www.livecll.com/cll/info", params);
         Request request = new Request.Builder().get().url(url).build();
         HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override
