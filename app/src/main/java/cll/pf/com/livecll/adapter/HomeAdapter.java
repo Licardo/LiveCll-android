@@ -76,7 +76,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 //                holder.mComponent.setAutoPlayTime(3000);
         } else if (viewHolder instanceof HomeFunctionHolder) {
             final HomeFunctionHolder holder = (HomeFunctionHolder) viewHolder;
-            holder.mTextView.setText(mTitles.get(i).getTile());
+            holder.mTextView.setText(mTitles.get(i).getTitle());
             Glide.with(holder.mImageView).load(mTitles.get(i).getImage_url()).into(holder.mImageView);
             final String path = mTitles.get(i).getClick_url();
             holder.setListener(new View.OnClickListener() {
@@ -88,7 +88,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
         } else if (viewHolder instanceof HomeListHolder) {
             final HomeListHolder holder = (HomeListHolder) viewHolder;
-            holder.mTextView.setText(mTitles.get(i).getTile());
+            holder.mTextView.setText(mTitles.get(i).getTitle());
             holder.mLinearLayout.removeAllViews();
             int size = mTitles.get(i).getHome_contents().size();
             for (int j = 0; j < size; j++) {
@@ -128,7 +128,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewHolder instanceof ArticleHolder) {
             final ArticleHolder holder = (ArticleHolder) viewHolder;
             final HomeVo title = mTitles.get(i);
-            holder.tvTitle.setText(title.getTile());
+            holder.tvTitle.setText(title.getTitle());
 //            holder.tvSource.setText(cllData.getSource());
 //            holder.tvPlatform.setText(cllData.getPlatform());
             Glide.with(holder.ivImage).load(title.getImage_url()).into(holder.ivImage);
@@ -139,7 +139,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Bundle bundle = new Bundle();
                     bundle.putString("key", title.getClick_url());
 //                    bundle.putString("title", cllData.getSource());
-                    bundle.putString("des", title.getTile());
+                    bundle.putString("des", title.getTitle());
                     RouterPath.getInstance().navigation(holder.ivImage.getContext(),
                             ConstantPath.WEBVIEW_INDEX, bundle);
                 }

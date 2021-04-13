@@ -7,7 +7,7 @@ import java.util.List;
 
 public class HomeVo implements Serializable, Comparable<HomeVo> {
     private String style;
-    private String tile;
+    private String title;
     private String image_url;
     private String click_url;
     private Integer sort;
@@ -106,12 +106,12 @@ public class HomeVo implements Serializable, Comparable<HomeVo> {
         this.style = style;
     }
 
-    public String getTile() {
-        return tile;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTile(String tile) {
-        this.tile = tile;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getImage_url() {

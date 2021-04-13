@@ -3,6 +3,7 @@ package cll.pf.com.livecll.ui;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -73,10 +74,8 @@ public class IntroduceActivity extends BaseActivity {
     }
 
     private void getAllHomeTitle() {
-        Request request = new Request.Builder()
-                .get()
-                .url("http://www.livecll.com/cll/home/info")
-                .build();
+        String url = HttpUtils.addParams("/cll/home/info", null);
+        Request request = new Request.Builder().get().url(url).build();
         HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -91,6 +90,7 @@ public class IntroduceActivity extends BaseActivity {
                 }
                 Gson gson = new Gson();
                 String data = response.body()==null?"":response.body().string();
+                Log.e("ssss", ">>>"+data);
                 List<HomeVo> homeVos = gson.fromJson(data, new TypeToken<List<HomeVo>>(){}.getType());
                 mTabInfos.addAll(homeVos);
                 Collections.sort(mTabInfos);
@@ -108,7 +108,7 @@ public class IntroduceActivity extends BaseActivity {
     private void loadCllDatas() {
         Map<String, String> params = new HashMap<>();
         params.put("page", "1");
-        String url = HttpUtils.addParams("http://www.livecll.com/cll/info", params);
+        String url = HttpUtils.addParams("/cll/info", params);
         Request request = new Request.Builder().get().url(url).build();
         HttpUtils.getClient().newCall(request).enqueue(new Callback() {
             @Override
@@ -127,7 +127,7 @@ public class IntroduceActivity extends BaseActivity {
                 for (CllVo vo:cllVos) {
                     HomeVo title = new HomeVo();
                     title.setImage_url(vo.getImage());
-                    title.setTile(vo.getTitle());
+                    title.setTitle(vo.getTitle());
                     title.setClick_url(vo.getUrl());
                     title.setStyle(Constants.STYLE_ARTICLE);
                     mTabInfos.add(title);
